@@ -3,6 +3,7 @@ import { Hospital } from '../data/hospitals';
 export async function getRecommendations(userInput: string): Promise<{
   department: string;
   hospitals: Hospital[];
+  aiConnected: boolean;
 }> {
   try {
     const response = await fetch('/api/triage', {
@@ -21,6 +22,7 @@ export async function getRecommendations(userInput: string): Promise<{
     return {
       department: data.department,
       hospitals: data.recommendations,
+      aiConnected: data.aiConnected,
     };
   } catch (error) {
     console.error("API call failed, falling back to local mapping:", error);
@@ -39,6 +41,7 @@ export async function getRecommendations(userInput: string): Promise<{
     return {
       department,
       hospitals: filteredHospitals,
+      aiConnected: false,
     };
   }
 }

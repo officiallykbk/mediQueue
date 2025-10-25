@@ -4,12 +4,14 @@ import { SymptomInput } from './components/SymptomInput';
 import { Results } from './components/Results';
 import { getRecommendations } from './utils/recommendations';
 import { Hospital } from './data/hospitals';
+import { StatusIndicator } from './components/StatusIndicator';
 
 function App() {
   const [results, setResults] = useState<{
     department: string;
     hospitals: Hospital[];
     input: string;
+    aiConnected: boolean;
   } | null>(null);
 
   const handleSearch = async (input: string) => {
@@ -27,7 +29,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(20,184,166,0.1),transparent_50%),radial-gradient(circle_at_70%_60%,rgba(6,182,212,0.1),transparent_50%)]" />
-
+      {results && (
+        <div className="absolute top-4 right-4">
+          <StatusIndicator isConnected={results.aiConnected} />
+        </div>
+      )}
       <div className="relative min-h-screen flex flex-col items-center px-4 py-12">
         <div className="text-center mb-12 animate-fadeInUp">
           <div className="flex items-center justify-center gap-3 mb-4">

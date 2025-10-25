@@ -71,7 +71,7 @@ const sortHospitals = (hospitals: Hospital[]): Hospital[] => {
   return [...hospitals].sort((a, b) => priority[a.queue] - priority[b.queue]);
 };
 
-export default async function handler(req: { body: TriageRequest }, res: { status: (arg0: number) => { json: (arg0: { department?: string; recommendations?: Hospital[]; error?: string; }) => void; }; }) {
+export default async function handler(req: { body: TriageRequest }, res: { status: (arg0: number) => { json: (arg0: { department?: string; recommendations?: Hospital[]; error?: string; aiConnected?: boolean; }) => void; }; }) {
   if (!req.body.symptoms) {
     res.status(400).json({ error: "Missing symptoms in request body" });
     return;
@@ -79,8 +79,10 @@ export default async function handler(req: { body: TriageRequest }, res: { statu
 
   const { symptoms } = req.body;
   let department: string;
+  let aiConnected = false;
   try {
     department = await getDepartmentFromGemini(symptoms);
+    aiConnected = true;
   } catch (err) {
     console.error(err);
     department = getFallbackDepartment(symptoms);
@@ -88,5 +90,5 @@ export default async function handler(req: { body: TriageRequest }, res: { statu
 
   const recommendations = sortHospitals(hospitals.filter(h => h.departments.includes(department))).slice(0, 3);
 
-  res.status(200).json({ department, recommendations });
+  res.status(200).json({ department, recommendations, aiConnected });
 }
