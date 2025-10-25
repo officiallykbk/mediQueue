@@ -12,8 +12,8 @@ function App() {
     input: string;
   } | null>(null);
 
-  const handleSearch = (input: string) => {
-    const recommendation = getRecommendations(input);
+  const handleSearch = async (input: string) => {
+    const recommendation = await getRecommendations(input);
     setResults({
       ...recommendation,
       input

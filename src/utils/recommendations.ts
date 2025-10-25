@@ -1,20 +1,44 @@
-import { Hospital, hospitals } from '../data/hospitals';
-import { matchSymptomToDepartment } from './symptomMapping';
+import { Hospital } from '../data/hospitals';
 
-const queuePriority = { Low: 1, Medium: 2, High: 3 };
-
-export function getRecommendations(userInput: string): {
+export async function getRecommendations(userInput: string): Promise<{
   department: string;
   hospitals: Hospital[];
-} {
-  const department = matchSymptomToDepartment(userInput);
+}> {
+  try {
+    const response = await fetch('/api/triage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ symptoms: userInput }),
+    });
 
-  const filteredHospitals = hospitals
-    .filter(h => h.departments.includes(department))
-    .sort((a, b) => queuePriority[a.queue] - queuePriority[b.queue]);
+    if (!response.ok) {
+      throw new Error('API request failed');
+    }
 
-  return {
-    department,
-    hospitals: filteredHospitals
-  };
+    const data = await response.json();
+    return {
+      department: data.department,
+      hospitals: data.recommendations,
+    };
+  } catch (error) {
+    console.error("API call failed, falling back to local mapping:", error);
+
+    // Fallback to a simplified local implementation if the API fails
+    const { matchSymptomToDepartment } = await import('./symptomMapping');
+    const department = matchSymptomToDepartment(userInput);
+
+    const { hospitals } = await import('../data/hospitals');
+    const queuePriority = { Low: 1, Medium: 2, High: 3 };
+
+    const filteredHospitals = hospitals
+      .filter(h => h.departments.includes(department))
+      .sort((a, b) => queuePriority[a.queue] - queuePriority[b.queue]);
+
+    return {
+      department,
+      hospitals: filteredHospitals,
+    };
+  }
 }
