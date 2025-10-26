@@ -20,6 +20,7 @@ import { LoadingIndicator } from './components/LoadingIndicator';
 function App() {
   const [results, setResults] = useState<{
     department: string;
+    departmentMapped: string;
     hospitals: Hospital[];
     input: string;
     aiConnected: boolean;
@@ -84,6 +85,7 @@ function App() {
             </button>
             <Results
               department={results.department}
+              departmentMapped={results.departmentMapped}
               hospitals={results.hospitals}
               symptomInput={results.input}
               sentence={results.sentence}

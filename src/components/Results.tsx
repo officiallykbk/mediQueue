@@ -5,12 +5,13 @@ import { useEffect, useState, useMemo } from 'react';
 
 interface ResultsProps {
   department: string;
+  departmentMapped: string;
   hospitals: Hospital[];
   symptomInput: string;
   sentence?: string;
 }
 
-export function Results({ department, hospitals: initialHospitals, symptomInput, sentence }: ResultsProps) {
+export function Results({ department, departmentMapped, hospitals: initialHospitals, symptomInput, sentence }: ResultsProps) {
   const [hospitals, setHospitals] = useState(initialHospitals);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ export function Results({ department, hospitals: initialHospitals, symptomInput,
       <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border-l-4 border-teal-500 p-6 rounded-lg flex items-start">
         <CheckCircle2 className="w-6 h-6 text-teal-600 mr-4 flex-shrink-0 mt-0.5" />
         <div>
-          <h3 className="font-semibold text-teal-900 mb-1">Recommended Department: {department}</h3>
+          <h3 className="font-semibold text-teal-900 mb-1">Recommended Department: {departmentMapped}</h3>
           <p className="text-teal-700 text-sm">
             {sentence ? (
               <span>{sentence}</span>

@@ -2,6 +2,7 @@ import { Hospital } from '../data/hospitals';
 
 export async function getRecommendations(userInput: string): Promise<{
   department: string;
+  departmentMapped: string;
   hospitals: Hospital[];
   sentence: string;
   aiConnected: boolean;
@@ -22,6 +23,7 @@ export async function getRecommendations(userInput: string): Promise<{
     const data = await response.json();
     return {
       department: data.department,
+      departmentMapped: data.departmentMapped,
       hospitals: data.recommendations,
       sentence: data.sentence,
       aiConnected: data.aiConnected,
@@ -47,6 +49,7 @@ export async function getRecommendations(userInput: string): Promise<{
 
     return {
       department,
+      departmentMapped: department,
       hospitals: filteredHospitals,
       sentence: "",
       aiConnected: false,
