@@ -50,7 +50,6 @@ Symptoms: ${symptoms}
   }
   
   const data: GeminiResponse = await response.json();
-  console.log(data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim());
   const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
   if (!rawText) throw new Error("No valid response from Gemini API");
@@ -58,7 +57,6 @@ Symptoms: ${symptoms}
   // Clean the response to ensure it's valid JSON
   const jsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
   const result = JSON.parse(jsonText);
-  console.log( `result: ${result.sentence}`);
 
   if (!result.department || !result.sentence) throw new Error("Invalid JSON response from Gemini API");
   return result;
