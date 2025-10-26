@@ -12,13 +12,14 @@ function App() {
     hospitals: Hospital[];
     input: string;
     aiConnected: boolean;
+    sentence?: string;
   } | null>(null);
 
   const handleSearch = async (input: string) => {
     const recommendation = await getRecommendations(input);
     setResults({
       ...recommendation,
-      input
+      input,
     });
   };
 
@@ -63,6 +64,7 @@ function App() {
               department={results.department}
               hospitals={results.hospitals}
               symptomInput={results.input}
+              sentence={results.sentence}
             />
           </>
         )}

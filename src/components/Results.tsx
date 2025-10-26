@@ -6,9 +6,10 @@ interface ResultsProps {
   department: string;
   hospitals: Hospital[];
   symptomInput: string;
+  sentence?: string;
 }
 
-export function Results({ department, hospitals, symptomInput }: ResultsProps) {
+export function Results({ department, hospitals, symptomInput, sentence }: ResultsProps) {
   if (hospitals.length === 0) {
     return (
       <div className="w-full max-w-2xl mt-8 animate-fadeInUp">
@@ -32,8 +33,14 @@ export function Results({ department, hospitals, symptomInput }: ResultsProps) {
         <div>
           <h3 className="font-semibold text-teal-900 mb-1">Here's what we recommend</h3>
           <p className="text-teal-700 text-sm">
-            Based on your symptoms, "<strong>{symptomInput}</strong>," the <strong>{department}</strong> department seems like the best fit.
-            To help you get care faster, we've sorted the hospitals below by the shortest wait times.
+            {sentence ? (
+              <span>{sentence}</span>
+            ) : (
+              <span>
+                Based on your symptoms, "<strong>{symptomInput}</strong>," the <strong>{department}</strong> department seems like the best fit.
+                To help you get care faster, we've sorted the hospitals below by the shortest wait times.
+              </span>
+            )}
           </p>
         </div>
       </div>
