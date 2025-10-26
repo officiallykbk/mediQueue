@@ -5,6 +5,7 @@ import { Results } from './components/Results';
 import { getRecommendations } from './utils/recommendations';
 import { Hospital } from './data/hospitals';
 import { StatusIndicator } from './components/StatusIndicator';
+import { LoadingIndicator } from './components/LoadingIndicator';
 
 function App() {
   const [results, setResults] = useState<{
@@ -14,13 +15,22 @@ function App() {
     aiConnected: boolean;
     sentence?: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async (input: string) => {
-    const recommendation = await getRecommendations(input);
-    setResults({
-      ...recommendation,
-      input,
-    });
+    setIsLoading(true);
+    try {
+      const recommendation = await getRecommendations(input);
+      setResults({
+        ...recommendation,
+        input,
+      });
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+      // Optionally, set an error state here to show a message to the user
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -50,7 +60,9 @@ function App() {
           </p>
         </div>
 
-        {!results ? (
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : !results ? (
           <SymptomInput onSearch={handleSearch} />
         ) : (
           <>
