@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { hospitals, Hospital } from '../src/data/hospitals';
 
 interface TriageRequest {
@@ -120,6 +121,14 @@ app.post('/api/triage', async (req, res) => {
   const recommendations = sortHospitals(hospitals.filter(h => h.departments.includes(department))).slice(0, 3);
   return res.status(200).json({ department, recommendations, aiConnected, sentence });
 });
+
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.resolve(__dirname, '../dist');
+  app.use(express.static(buildPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
 
 const PORT = Number(process.env.PORT || 3001);
 app.listen(PORT, () => {
