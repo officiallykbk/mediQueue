@@ -32,11 +32,16 @@ export async function getRecommendations(userInput: string): Promise<{
     const department = matchSymptomToDepartment(userInput);
 
     const { hospitals } = await import('../data/hospitals');
-    const queuePriority = { Low: 1, Medium: 2, High: 3 };
+    const queuePriority = { Low: 0, Medium: 1, High: 2 };
 
     const filteredHospitals = hospitals
       .filter(h => h.departments.includes(department))
-      .sort((a, b) => queuePriority[a.queue] - queuePriority[b.queue]);
+      .sort((a, b) => {
+        if (queuePriority[a.queue] !== queuePriority[b.queue]) {
+          return queuePriority[a.queue] - queuePriority[b.queue];
+        }
+        return a.name.localeCompare(b.name);
+      });
 
     return {
       department,
