@@ -1,12 +1,13 @@
-import { MapPin, Clock, Activity } from 'lucide-react';
+import { MapPin, Clock, Activity, Award } from 'lucide-react';
 import { Hospital } from '../data/hospitals';
 
 interface HospitalCardProps {
   hospital: Hospital;
   index: number;
+  isNearest?: boolean;
 }
 
-export function HospitalCard({ hospital, index }: HospitalCardProps) {
+export function HospitalCard({ hospital, index, isNearest }: HospitalCardProps) {
   const queueColors = {
     Low: 'bg-emerald-100 text-emerald-700 border-emerald-200',
     Medium: 'bg-amber-100 text-amber-700 border-amber-200',
@@ -45,17 +46,25 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
             {hospital.location}
           </div>
         </div>
-        <div
-          className={`px-3 py-1 rounded-full border text-sm font-semibold flex items-center gap-2 ${
-            queueColors[hospital.queue]
-          }`}
-        >
+        <div className="flex flex-col items-end gap-2">
           <div
-            className={`w-2 h-2 rounded-full ${
-              queueDotColors[hospital.queue]
-            } animate-pulse`}
-          />
-          {hospital.queue}
+            className={`px-3 py-1 rounded-full border text-sm font-semibold flex items-center gap-2 ${
+              queueColors[hospital.queue]
+            }`}
+          >
+            <div
+              className={`w-2 h-2 rounded-full ${
+                queueDotColors[hospital.queue]
+              } animate-pulse`}
+            />
+            {hospital.queue} Queue
+          </div>
+          {isNearest && (
+            <div className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-cyan-100 text-cyan-700 border border-cyan-200">
+              <Award className="w-3.5 h-3.5" />
+              Nearest Option
+            </div>
+          )}
         </div>
       </div>
 
@@ -64,6 +73,12 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
           <Clock className="w-5 h-5 mr-3 text-teal-600" />
           <span className="text-sm">
             Wait time: <span className="font-semibold">{hospital.waitTime}</span>
+          </span>
+        </div>
+        <div className="flex items-center text-gray-700">
+          <MapPin className="w-5 h-5 mr-3 text-teal-600" />
+          <span className="text-sm">
+            Distance: <span className="font-semibold">{hospital.distance} km</span>
           </span>
         </div>
 
