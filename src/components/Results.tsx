@@ -31,14 +31,13 @@ export function Results({ department, hospitals, symptomInput, sentence }: Resul
       <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border-l-4 border-teal-500 p-6 rounded-lg flex items-start">
         <CheckCircle2 className="w-6 h-6 text-teal-600 mr-4 flex-shrink-0 mt-0.5" />
         <div>
-          <h3 className="font-semibold text-teal-900 mb-1">Here's what we recommend</h3>
+          <h3 className="font-semibold text-teal-900 mb-1">Recommended Department: {department}</h3>
           <p className="text-teal-700 text-sm">
             {sentence ? (
               <span>{sentence}</span>
             ) : (
               <span>
-                Based on your symptoms, "<strong>{symptomInput}</strong>," the <strong>{department}</strong> department seems like the best fit.
-                To help you get care faster, we've sorted the hospitals below by the shortest wait times.
+                Based on your symptoms, "<strong>{symptomInput}</strong>," this seems like the best department for you. To help you get care faster, we've sorted the hospitals below by the shortest wait times.
               </span>
             )}
           </p>
