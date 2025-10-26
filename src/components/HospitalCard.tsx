@@ -19,10 +19,23 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
     High: 'bg-rose-500'
   };
 
+  const googleMapsUrl =
+    hospital.latitude && hospital.longitude
+      ? `https://www.google.com/maps/dir/?api=1&destination=${hospital.latitude},${hospital.longitude}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          hospital.name
+        )}+Ghana`;
+
   return (
-    <div
-      className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 opacity-0 animate-fadeInUp"
-      style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
+    <a
+      href={googleMapsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 opacity-0 animate-fadeInUp group"
+      style={{
+        animationDelay: `${index * 100}ms`,
+        animationFillMode: 'forwards'
+      }}
     >
       <div className="flex items-start justify-between mb-4">
         <div>
@@ -32,8 +45,16 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
             {hospital.location}
           </div>
         </div>
-        <div className={`px-3 py-1 rounded-full border text-sm font-semibold flex items-center gap-2 ${queueColors[hospital.queue]}`}>
-          <div className={`w-2 h-2 rounded-full ${queueDotColors[hospital.queue]} animate-pulse`} />
+        <div
+          className={`px-3 py-1 rounded-full border text-sm font-semibold flex items-center gap-2 ${
+            queueColors[hospital.queue]
+          }`}
+        >
+          <div
+            className={`w-2 h-2 rounded-full ${
+              queueDotColors[hospital.queue]
+            } animate-pulse`}
+          />
           {hospital.queue}
         </div>
       </div>
@@ -41,13 +62,15 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
       <div className="space-y-3">
         <div className="flex items-center text-gray-700">
           <Clock className="w-5 h-5 mr-3 text-teal-600" />
-          <span className="text-sm">Wait time: <span className="font-semibold">{hospital.waitTime}</span></span>
+          <span className="text-sm">
+            Wait time: <span className="font-semibold">{hospital.waitTime}</span>
+          </span>
         </div>
 
         <div className="flex items-start text-gray-700">
           <Activity className="w-5 h-5 mr-3 text-teal-600 mt-0.5" />
           <div className="flex flex-wrap gap-2">
-            {hospital.departments.map((dept) => (
+            {hospital.departments.map(dept => (
               <span
                 key={dept}
                 className="text-xs px-2 py-1 bg-teal-50 text-teal-700 rounded-full border border-teal-200"
@@ -58,6 +81,11 @@ export function HospitalCard({ hospital, index }: HospitalCardProps) {
           </div>
         </div>
       </div>
-    </div>
+      <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-end">
+        <span className="text-teal-600 font-semibold group-hover:text-teal-700 transition-colors text-sm">
+          📍 Get Directions
+        </span>
+      </div>
+    </a>
   );
 }
