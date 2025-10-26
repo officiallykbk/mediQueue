@@ -4,11 +4,13 @@ export interface Hospital {
   queue: "Low" | "Medium" | "High";
   location: string;
   waitTime: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const hospitals: Hospital[] = [
   { name: "Korle-Bu Teaching Hospital", departments: ["General", "Surgery", "Emergency"], queue: "High", location: "Korle-Bu, Accra", waitTime: "2-3 hours" },
-  { name: "Ridge Hospital", departments: ["General", "Maternity", "Pediatrics"], queue: "Medium", location: "Ridge, Accra", waitTime: "45-90 mins" },
+  { name: "Ridge Hospital", departments: ["General", "Maternity", "Pediatrics"], queue: "Medium", location: "Ridge, Accra", waitTime: "45-90 mins", latitude: 5.5625, longitude: -0.1977 },
   { name: "Nyaho Clinic", departments: ["General", "Cardiology"], queue: "Low", location: "Airport Residential, Accra", waitTime: "15-30 mins" },
   { name: "37 Military Hospital", departments: ["Emergency", "Cardiology", "Surgery"], queue: "High", location: "37 Station, Accra", waitTime: "1-2 hours" },
   { name: "LEKMA Hospital", departments: ["General", "Maternity", "Emergency"], queue: "Low", location: "Teshie, Accra", waitTime: "20-40 mins" },
