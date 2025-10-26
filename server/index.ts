@@ -2,8 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import { hospitals, Hospital } from '../src/data/hospitals';
-import { departments } from '../src/data/departments';
+import { hospitals, Hospital } from './src/data/hospitals';
+import { departments } from './src/data/departments';
 
 interface TriageRequest {
   symptoms: string;
@@ -177,7 +177,7 @@ const sortHospitals = (input: Hospital[]): Hospital[] => {
 };
 
 const app = express();
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:4173'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:4173',];
 if (process.env.VERCEL_URL) {
   allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
 }
@@ -221,13 +221,13 @@ app.post('/api/triage', async (req, res) => {
   return res.status(200).json({ department, recommendations, aiConnected, sentence, departmentMapped: effectiveDept });
 });
 
-if (process.env.NODE_ENV === 'production') {
-  const buildPath = path.resolve(__dirname, '../dist');
-  app.use(express.static(buildPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
-  });
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const buildPath = path.resolve(__dirname, '../dist');
+//   app.use(express.static(buildPath));
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(buildPath, 'index.html'));
+//   });
+// }
 
 const PORT = Number(process.env.PORT || 3001);
 app.listen(PORT, () => {

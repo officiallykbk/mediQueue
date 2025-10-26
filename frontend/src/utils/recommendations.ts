@@ -8,7 +8,8 @@ export async function getRecommendations(userInput: string): Promise<{
   aiConnected: boolean;
 }> {
   try {
-    const response = await fetch('/api/triage', {
+    const base = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${base}/api/triage`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
