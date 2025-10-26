@@ -1,6 +1,7 @@
 import { Hospital } from '../data/hospitals';
 import { HospitalCard } from './HospitalCard';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useEffect, useState, useMemo } from 'react';
 
 interface ResultsProps {
   department: string;
@@ -9,7 +10,25 @@ interface ResultsProps {
   sentence?: string;
 }
 
-export function Results({ department, hospitals, symptomInput, sentence }: ResultsProps) {
+export function Results({ department, hospitals: initialHospitals, symptomInput, sentence }: ResultsProps) {
+  const [hospitals, setHospitals] = useState(initialHospitals);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHospitals(hs =>
+        hs.map(h => ({
+          ...h,
+          queue: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)] as "Low" | "Medium" | "High"
+        }))
+      );
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const sortedHospitals = useMemo(() => {
+    return [...hospitals].sort((a, b) => a.distance - b.distance);
+  }, [hospitals]);
+
   if (hospitals.length === 0) {
     return (
       <div className="w-full max-w-2xl mt-8 animate-fadeInUp">
@@ -37,7 +56,7 @@ export function Results({ department, hospitals, symptomInput, sentence }: Resul
               <span>{sentence}</span>
             ) : (
               <span>
-                Based on your symptoms, "<strong>{symptomInput}</strong>," this seems like the best department for you. To help you get care faster, we've sorted the hospitals below by the shortest wait times.
+                Based on your symptoms, "<strong>{symptomInput}</strong>," we've sorted the hospitals by distance. The nearest options are shown first.
               </span>
             )}
           </p>
@@ -45,8 +64,13 @@ export function Results({ department, hospitals, symptomInput, sentence }: Resul
       </div>
 
       <div className="grid gap-5">
-        {hospitals.map((hospital, index) => (
-          <HospitalCard key={hospital.name} hospital={hospital} index={index} />
+        {sortedHospitals.map((hospital, index) => (
+          <HospitalCard
+            key={hospital.name}
+            hospital={hospital}
+            index={index}
+            isNearest={index === 0}
+          />
         ))}
       </div>
     </div>
