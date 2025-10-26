@@ -1,7 +1,7 @@
 import { Hospital } from '../data/hospitals';
 import { HospitalCard } from './HospitalCard';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 
 interface ResultsProps {
   department: string;
@@ -26,11 +26,40 @@ export function Results({ department, departmentMapped, hospitals: initialHospit
     return () => clearInterval(interval);
   }, []);
 
+  const [visibleCount, setVisibleCount] = useState(3);
+
   const sortedHospitals = useMemo(() => {
     return [...hospitals].sort((a, b) => a.distance - b.distance);
   }, [hospitals]);
 
-  if (hospitals.length === 0) {
+  const displayedHospitals = useMemo(() => {
+    return sortedHospitals.slice(0, visibleCount);
+  }, [sortedHospitals, visibleCount]);
+
+  const loader = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < sortedHospitals.length) {
+          setVisibleCount((prev) => prev + 3);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loader.current) {
+      observer.observe(loader.current);
+    }
+
+    return () => {
+      if (loader.current) {
+        observer.unobserve(loader.current);
+      }
+    };
+  }, [loader, visibleCount, sortedHospitals.length]);
+
+  if (!hospitals || hospitals.length === 0) {
     return (
       <div className="w-full max-w-2xl mt-8 animate-fadeInUp">
         <div className="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-lg flex items-start">
@@ -65,7 +94,7 @@ export function Results({ department, departmentMapped, hospitals: initialHospit
       </div>
 
       <div className="grid gap-5">
-        {sortedHospitals.map((hospital, index) => (
+        {displayedHospitals.map((hospital, index) => (
           <HospitalCard
             key={hospital.name}
             hospital={hospital}
@@ -74,6 +103,10 @@ export function Results({ department, departmentMapped, hospitals: initialHospit
           />
         ))}
       </div>
+
+      {visibleCount < sortedHospitals.length && (
+        <div ref={loader} className="w-full h-10" />
+      )}
     </div>
   );
 }
