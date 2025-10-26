@@ -177,7 +177,7 @@ const sortHospitals = (input: Hospital[]): Hospital[] => {
 };
 
 const app = express();
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:4173',];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:4173','medi-queue-seven.vercel.app'];
 if (process.env.VERCEL_URL) {
   allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
 }
