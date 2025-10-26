@@ -15,12 +15,12 @@ interface GeminiResponse {
   }[];
 }
 
-const getDepartmentFromGemini = async (symptoms: string): Promise<string> => {
+const getDepartmentFromGemini = async (symptoms: string): Promise<{ department: string, sentence: string }> => {
   const prompt = `
 You are a medical triage assistant for Ghana.
-Read the user's symptoms and return ONLY the hospital department that should handle it.
-Possible departments: General, Emergency, Cardiology, Maternity, Pediatrics, Dermatology.
-Respond with ONE WORD ONLY — the department.
+Read the user's symptoms and return a JSON object with two keys: "department" and "sentence".
+The "department" should be one of the following: General, Emergency, Cardiology, Maternity, Pediatrics, Dermatology.
+The "sentence" should be a short, conversational summary of the recommendation.
 
 Symptoms: ${symptoms}
 `;
@@ -28,7 +28,7 @@ Symptoms: ${symptoms}
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) throw new Error("Missing GOOGLE_API_KEY");
 
-  const model = "gemini-2.5-flash"; 
+  const model = "gemini-2.5-flash";
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`,
     {
@@ -51,10 +51,15 @@ Symptoms: ${symptoms}
   }
 
   const data: GeminiResponse = await response.json();
-  const department = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!rawText) throw new Error("No valid response from Gemini API");
 
-  if (!department) throw new Error("No valid response from Gemini API");
-  return department;
+  // Clean the response to ensure it's valid JSON
+  const jsonText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+  const result = JSON.parse(jsonText);
+
+  if (!result.department || !result.sentence) throw new Error("Invalid JSON response from Gemini API");
+  return result;
 };
 
 
@@ -129,10 +134,13 @@ app.post('/api/triage', async (req, res) => {
   if (!body?.symptoms) return res.status(400).json({ error: 'Missing symptoms in request body' });
 
   let department: string;
+  let sentence: string | undefined;
   let aiConnected = false;
 
   try {
-    department = await getDepartmentFromGemini(body.symptoms);
+    const result = await getDepartmentFromGemini(body.symptoms);
+    department = result.department;
+    sentence = result.sentence;
     aiConnected = true;
   } catch (err) {
     console.error('[triage] Gemini failed, using fallback:', err);
@@ -140,7 +148,7 @@ app.post('/api/triage', async (req, res) => {
   }
 
   const recommendations = sortHospitals(hospitals.filter(h => h.departments.includes(department))).slice(0, 3);
-  return res.status(200).json({ department, recommendations, aiConnected });
+  return res.status(200).json({ department, recommendations, aiConnected, sentence });
 });
 
 const PORT = Number(process.env.PORT || 3001);
