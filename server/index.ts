@@ -44,12 +44,11 @@ Symptoms: ${symptoms}
       }),
     }
   );
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Gemini API request failed: ${response.status} - ${errorText}`);
   }
-
+  
   const data: GeminiResponse = await response.json();
   const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
   if (!rawText) throw new Error("No valid response from Gemini API");
