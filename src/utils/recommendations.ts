@@ -3,6 +3,7 @@ import { Hospital } from '../data/hospitals';
 export async function getRecommendations(userInput: string): Promise<{
   department: string;
   hospitals: Hospital[];
+  sentence: string;
   aiConnected: boolean;
 }> {
   try {
@@ -22,6 +23,7 @@ export async function getRecommendations(userInput: string): Promise<{
     return {
       department: data.department,
       hospitals: data.recommendations,
+      sentence: data.sentence,
       aiConnected: data.aiConnected,
     };
   } catch (error) {
@@ -46,6 +48,7 @@ export async function getRecommendations(userInput: string): Promise<{
     return {
       department,
       hospitals: filteredHospitals,
+      sentence: "",
       aiConnected: false,
     };
   }
