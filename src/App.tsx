@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { Activity } from 'lucide-react';
+
+// Local LogoIcon replacing lucide Activity for branding
+export const LogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M15.5 8.5L8.5 15.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M8.5 10.5V8.5H10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M15.5 13.5V15.5H13.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 import { SymptomInput } from './components/SymptomInput';
 import { Results } from './components/Results';
 import { getRecommendations } from './utils/recommendations';
@@ -49,10 +59,10 @@ function App() {
         <div className="text-center mb-12 animate-fadeInUp">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl shadow-lg">
-              <Activity className="w-8 h-8 text-white" />
+              <LogoIcon className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-5xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-              HealthSeek
+              MediQueue
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
