@@ -97,7 +97,20 @@ const sortHospitals = (input: Hospital[]): Hospital[] => {
 };
 
 const app = express();
-app.use(cors());
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:4173'];
+if (process.env.VERCEL_URL) {
+  allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 
 app.post('/api/triage', async (req, res) => {
